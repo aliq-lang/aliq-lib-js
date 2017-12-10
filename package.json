@@ -1,0 +1,30 @@
+{
+  "name": "aliq-lib",
+  "version": "0.0.0",
+  "description": "ALIQ libraries for JavaScript and TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "tsc",
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sergey-shandar/aliq-lib-js.git"
+  },
+  "keywords": [
+    "aliq"
+  ],
+  "files": [
+    "index.d.ts"
+  ],
+  "author": "Sergey Shandar",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/sergey-shandar/aliq-lib-js/issues"
+  },
+  "homepage": "https://github.com/sergey-shandar/aliq-lib-js#readme",
+  "devDependencies": {
+    "typescript": "^2.6.2"
+  }
+}
