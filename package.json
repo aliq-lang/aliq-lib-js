@@ -26,5 +26,9 @@
   "homepage": "https://github.com/sergey-shandar/aliq-lib-js#readme",
   "devDependencies": {
     "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "aliq": "^0.0.5",
+    "iterator-lib": "0.0.5"
   }
 }
