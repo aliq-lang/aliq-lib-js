@@ -11,3 +11,4 @@ ALIQ library for JavaScript and TypeScript
 |reduce    |Aggregate |
 |every     |All       |
 |size      |Count     |
+|some      |Any       |

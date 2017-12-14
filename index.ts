@@ -1,6 +1,6 @@
 import * as A from "aliq"
 import * as I from "iterator-lib"
-import { nameValue } from "iterator-lib";
+import { nameValue, ObjectAsMap } from "iterator-lib";
 
 export function filter<T>(input: A.Bag<T>, func: (v: T) => boolean): A.Bag<T> {
     return A.flatMap(input, v => func(v) ? [v] : [])
@@ -25,7 +25,7 @@ export function countBy<T>(input: A.Bag<T>, name: (v: T) => string): A.Bag<[stri
 }
 
 export function reduce<T>(input: A.Bag<T>, func: (a: T, b: T) => T, init?: T): A.Bag<T> {
-    const x = init === undefined ? input : A.merge([input, A.const_(init)])
+    const x = init === undefined ? input : A.merge(input, A.const_(init))
     const pairs = map(input, v => I.nameValue("", v))
     return A.groupBy(pairs, func, e => [e[1]])
 }
@@ -41,7 +41,7 @@ export function flatten<T>(input: A.Bag<T[]>): A.Bag<T> {
 export function intersection(a: A.Bag<string>, b: A.Bag<string>): A.Bag<string> {
     const ap = map(a, v => nameValue(v, { a: 1, b: 0 }))
     const bp = map(b, v => nameValue(v, { a: 0, b: 1 }))
-    const p = A.merge([ap, bp])
+    const p = A.merge(ap, bp)
     const g = A.groupBy(
         p,
         (v0, v1) => ({ a: v0.a + v1.a, b: v0.b + v1.b }),
@@ -52,6 +52,12 @@ export function intersection(a: A.Bag<string>, b: A.Bag<string>): A.Bag<string> 
         })
     return A.flatMap(g, v => I.repeat(v[0], v[1]))
 }
+
+/*
+export function intersection(...a: A.Bag<string>[]): A.Bag<string> {
+    const p = I.map(a, (x, i) => x)
+}
+*/
 
 export function isEmpty<T>(input: A.Bag<T>): A.Bag<boolean> {
     return reduce(map(input, () => true), (a, b) => a || b, false)
@@ -78,6 +84,23 @@ export function reject<T>(input: A.Bag<T>, f: (v: T) => boolean): A.Bag<T> {
 }
 
 export function size<T>(input: A.Bag<T>): A.Bag<number> {
-    const x = map(input, _ => 1)
-    return reduce(x, (a, b) => a + b, 0)
+    return sum(map(input, _ => 1))
+}
+
+export function some<T>(input: A.Bag<T>, func: (v: T) => boolean): A.Bag<boolean> {
+    return reduce(map(input, func), (a, b) => a || b, false)
+}
+
+export function sum(input: A.Bag<number>): A.Bag<number> {
+    return reduce(input, (a, b) => a + b, 0)
+}
+
+export function toArray<T>(input: A.Bag<T>): A.Bag<T[]> {
+    return reduce(map(input, v => [v]), (a, b) => a.concat(b), [])
+}
+
+export function toObject<T>(input: A.Bag<[string, T]>): A.Bag<ObjectAsMap<T>> {
+    const x = map(input, v => ({ [v[0]]: v[1] }))
+    const result = reduce(x, (a, b) => Object.assign({}, a, b), {})
+    return result
 }
